@@ -1,0 +1,47 @@
+﻿@page
+@model Books.Views.Fox.IndexModel
+@{
+    //ViewData["Title"] = "Fox Page";
+}
+
+<h1>Foxes</h1>
+
+<button id="get-fox-button">Get Fox</button>
+<br />
+
+<img id="the-image" style="display: none;" />
+@*<video id="the-video" controls style="display: none;" />*@
+
+<style>
+    img {
+        max-width: 200px;
+    }
+
+    video {
+        max-width: 200px;
+    }
+
+    button {
+        margin: 10px 0px;
+    }
+</style>
+
+<script>
+
+    const foxImage = document.querySelector('#the-image');
+    const getFoxButton = document.querySelector('#get-fox-button');
+
+    function getTheFox() {
+        fetch('https://randomfox.ca/floof/')
+            .then(response => response.json())
+            .then(data => {
+                foxImage.src = data.image;
+                foxImage.style.display = 'inline-block';
+            });
+    }
+
+    getFoxButton.addEventListener('click', () => getTheFox());
+
+    getTheFox();
+
+</script>
