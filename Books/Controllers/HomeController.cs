@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using Books.Models;
 using Books.ViewModels.Home;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Books.Controllers
@@ -14,40 +15,19 @@ namespace Books.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly BookData _bookData;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, IConfiguration configuration, BookData bookData)
         {
             _logger = logger;
+            _configuration = configuration;
+            _bookData = bookData;
         }
 
         public IActionResult Index()
         {
-            var books = new List<Book>();
-
-            // NOTE: DO NOT EVER HARD CODE YOUR CONNECTION STRING
-            using (var conn = new SqlConnection("Server=.;Database=Books;Trusted_Connection=True;"))
-            {
-                conn.Open();
-                var cmd = new SqlCommand();
-                cmd.Connection = conn;
-                cmd.CommandType = System.Data.CommandType.Text;
-                cmd.CommandText = "SELECT * FROM Books";
-
-                var reader = cmd.ExecuteReader();
-
-
-                while(reader.Read())
-                {
-                    var title = reader["Title"].ToString();
-                    var id = Convert.ToInt32(reader["BookId"]);
-                    books.Add(new Book
-                    {
-                        BookId = id,
-                        Title = title
-                    });
-                }
-            }
-
+            var books = _bookData.GetBookData();
             var viewModel = new HomeViewModel
             {
                 Message = "Look at these wonderful books",
@@ -67,5 +47,7 @@ namespace Books.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        
     }
 }
