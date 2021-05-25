@@ -52,7 +52,7 @@ namespace Books
             {
                 endpoints.MapControllerRoute(
                     name: "blogCategory",
-                    pattern: "/blog/{name}",
+                    pattern: "/blog/category/{name}",
                     new { controller = "Blog", action = "BlogCategory" });
 
                 endpoints.MapControllerRoute(
