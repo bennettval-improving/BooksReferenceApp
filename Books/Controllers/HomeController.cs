@@ -37,6 +37,11 @@ namespace Books.Controllers
             return View(viewModel);
         }
 
+        public IActionResult Book(int? id)
+        {
+            return View();
+        }
+
         public IActionResult Privacy()
         {
             return View();

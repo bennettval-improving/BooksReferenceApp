@@ -45,5 +45,12 @@ namespace Books.Models
 
             return books;
         }
+
+        //public Book GetBook(int id)
+        //{
+            
+        //}
+
+        
     }
 }

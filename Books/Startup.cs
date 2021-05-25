@@ -51,6 +51,16 @@ namespace Books
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllerRoute(
+                    name: "blogCategory",
+                    pattern: "/blog/{name}",
+                    new { controller = "Blog", action = "BlogCategory" });
+
+                endpoints.MapControllerRoute(
+                    name: "singleBlogPost",
+                    pattern: "/blog/{year}/{month}/{day}/{slug}",
+                    new { controller = "Blog", action = "SingleBlogPost" });
+
+                endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
             });
