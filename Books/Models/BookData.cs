@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Threading.Tasks;
+using Books.ViewModels.Books;
 using Microsoft.Extensions.Configuration;
 
 namespace Books.Models
@@ -25,7 +25,7 @@ namespace Books.Models
                 conn.Open();
                 var cmd = new SqlCommand();
                 cmd.Connection = conn;
-                cmd.CommandType = System.Data.CommandType.Text;
+                cmd.CommandType = CommandType.Text;
                 cmd.CommandText = "SELECT * FROM Books";
 
                 var reader = cmd.ExecuteReader();
@@ -46,11 +46,56 @@ namespace Books.Models
             return books;
         }
 
-        //public Book GetBook(int id)
-        //{
-            
-        //}
+        public BookViewModel GetBook(int id)
+        {
+            var book = new BookViewModel();
 
-        
+            using (var conn = new SqlConnection(_configuration.GetConnectionString("default")))
+            {
+                conn.Open();
+                var cmd = new SqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "SELECT * FROM Books WHERE BookId = @id";
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    Value = id,
+                    ParameterName = "@id",
+                    SqlDbType = SqlDbType.Int
+                });
+
+                var reader = cmd.ExecuteReader();
+
+
+                while (reader.Read())
+                {
+                    var title = reader["Title"].ToString();
+                    book.BookId = id;
+                    book.Title = title;
+                }
+            }
+
+            return book;
+        }
+
+        public void CreateBook(Book book)
+        {
+            using (var conn = new SqlConnection(_configuration.GetConnectionString("default")))
+            {
+                conn.Open();
+                var cmd = new SqlCommand();
+                cmd.Connection = conn;
+                cmd.CommandType = CommandType.Text;
+                cmd.CommandText = "Insert into Books (Title) Values (@title)";
+                cmd.Parameters.Add(new SqlParameter
+                {
+                    Value = book.Title,
+                    ParameterName = "@title",
+                    SqlDbType = SqlDbType.VarChar
+                });
+
+                cmd.ExecuteNonQuery();
+            }
+        }
     }
 }
